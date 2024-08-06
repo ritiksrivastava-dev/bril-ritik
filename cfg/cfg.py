@@ -38,22 +38,34 @@ def get_cfg(name2block):
     """Given a name-to-block map, this function wil produce a 
     mapping from the block name to its successor"""
     out = {}
-    for name, block in name2block.values():
+    for i, (name, block) in enumerate(name2block.items()):
         last = block[-1]
         if last['op'] in ('jmp', 'br'):
             succ = last['labels']
         elif last['op'] == 'ret':
             succ = []   
         else:
-            (name2block.keys())
+            if i == len(name2block) - 1:
+                succ = []
+            else:
+                succ = [list(name2block.keys())[i + 1]]
         out[name] = succ
     return out
 
 def mycfg():
     prog = json.load(sys.stdin)
+    """Our entry point in to a program was function, 
+    Main function being the first one we encounter"""
     for func in prog['functions']:
-        name2block = block_map(form_blocks(func['instrs']))
+        name2block = block_map(form_blocks(func['instrs'])) 
+        #form_block generates basic blocks based on terminators
+        #block_map creates a map of block name and instructions associated with a given block
+        #finally get_cfg is responsible for giving structure to the OrderedDict giving the CFG.
+        for name, block in name2block.items():
+            print(name)
+            print(' ', block)
         cfg = get_cfg(name2block)
         print(cfg)
 if __name__ == '__main__':
     mycfg()
+
