@@ -54,8 +54,6 @@ def get_cfg(name2block):
 
 def mycfg():
     prog = json.load(sys.stdin)
-    """Our entry point in to a program was function, 
-    Main function being the first one we encounter"""
     for func in prog['functions']:
         name2block = block_map(form_blocks(func['instrs'])) 
         #form_block generates basic blocks based on terminators
@@ -66,6 +64,7 @@ def mycfg():
             print(' ', block)
         cfg = get_cfg(name2block)
         print(cfg)
+
 if __name__ == '__main__':
     mycfg()
 
